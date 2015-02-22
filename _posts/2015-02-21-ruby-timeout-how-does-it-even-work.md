@@ -7,9 +7,9 @@ published: True
 
 ---
 
-[Timeout][timeout-rubydocs] is a useful tool in the Ruby standard library that allows a block of code to auto-terminate if it exceeds the specified timeout interval.
+[Timeout][timeout-rubydocs] is a useful tool in the Ruby standard library that allows a block of code to auto-terminate if execution time exceeds the specified timeout interval.
 
-This is useful for when you have something that could potentially run a lot longer than desired. In practice, I've found this useful for API calls.
+This is useful for when you have a block of code that could potentially run a lot longer than desired. In practice, I've found this useful for API calls.
 
 {% highlight ruby %}
 Timeout::timeout(TIMEOUT_SECONDS) do
@@ -17,14 +17,24 @@ Timeout::timeout(TIMEOUT_SECONDS) do
 end
 {% endhighlight %}
 
-The above will throw a `Timeout::Error` if the slow API call takes longer than the specified timeout to complete. Very simple and very useful.
+The above will throw a `Timeout::Error` if the slow API call takes longer than the specified timeout to complete. Very simple and useful.
 
-One day, I was debugging some funny errors being thrown in production, originating from inside a Timeout block. My first suspicion was that I didn't quite understand how Timeout handles numbers that are less than or equal to zero, so I opened up irb and tried a few simple examples. This began a Timeout spirit quest/witch hunt in which I dug into the Ruby docs and source code and learned a thing or two about Timeout and threads.
+One day, I was debugging some funny errors being thrown in production, originating from inside a Timeout block. My immediate suspicion was that I didn't quite understand how Timeout worked (boy, was I right). So I opened up irb and tried a few simple examples. Then a few more. What? How does Timeout even work?
+
+Whenever I see something really weird like this, I am apt to undertake a quest (sometimes called "witch hunt" when I'm feeling particularly frustrated by the problem). I drop everything and work until it's finished. So far, my quests have concluded in three ways:
+
+1. I find out I was being an idiot. Also known as PEBKAC.
+2. I find a bug that was already fixed in a later version.
+3. I learn something new.
+
+I dug deep inside my soul for strength, prepared to <s>waste some more time</s> slay another dragon.
+
+Thus began a Timeout spirit quest/witch hunt in which I dug into the Ruby docs and source code and learned a thing or two about Timeout and threads.
 
 Wait...what?
 ------------
 
-So I start the tale of my quest with something every great telling of quest starts with...
+So I start the tale of my quest with something every great quest-telling starts with...
 
 Pop quiz! What is the output from each of the following?
 
@@ -65,37 +75,29 @@ Chances are, you actually got each thing to successfully print its output. This 
 The quest begins
 ----------------
 
-Whenever I see something really weird like this, I am apt undertake a quest (called "witch hunt" when I'm feeling particularly frustrated by the problem). I drop everything and work until it's finished. So far, my quests have concluded in one of three ways:
-
-1. I find out I was being an idiot. Also known as PEBKAC.
-2. I find a bug that was already fixed in a later version.
-3. I learn something new.
-
-I dug deep inside my soul for strength, prepared to <s>waste time</s> slay another dragon.
-
 If you were debugging a problem related to this in production, you might do what I did and take a look at the [docs for the timeout method][timeout-timeout-rubydocs] to find some answers.
 
-Turns out that we only get one answer two our two puzzlers:
+Unfortunately, we only get one answer out of the two puzzlers:
 
 > A value of 0 or nil will execute the block without any timeout.
 
-That means a Timeout block with a `0` or `nil` given will execute as if it were not in a Timeout block at all. Okay, that's certainly strange behavior, but at least it's documented as a bit of a gotcha in the docs. But that doesn't quite explain why our `Timeout::timeout(-1)` case. Perhaps rubydocs misdocumented this, and in fact a value of `0` _or less_ will execute the block without timeout. An easy way to check is to run a long-running block in Timeout using irb.
+That means a Timeout block with a `0` or `nil` given will execute as if it were not in a Timeout block at all. Okay, that's certainly strange behavior, but at least it's documented as a bit of a gotcha in the docs. But that doesn't quite explain why our `Timeout::timeout(-1)` case. Perhaps rubydocs misdocumented this, and in fact a value of `0` _or less_ will execute the block without timeout. An easy way to check is to run a long-running block in Timeout.
 
 {% highlight ruby %}
 >> Timeout::timeout(-1) { sleep(10); puts 'complete!' }
 ArgumentError: time interval must be positive
 {% endhighlight %}
 
-That didn't work. Looks like we still get a timeout with negative numbers. But wait--we got an `ArgumentError`, which is actually what I initially guessed would happen in the example above, but instead the block completed successfully. What's going on here?
+That didn't work. Looks like we still get a timeout with negative numbers. But wait--we got an `ArgumentError`, which is actually what I initially guessed would happen in the `puts` example above. But in the `puts` example, the block completed successfully. What's going on here?
 
 The information we got from the docs don't tell us anything about this behavior, so there's not much left but to dig into the ultimate truth: [the source][timeout-ruby-github].
 
-Digging deep
+Here be dragons
 ------------
 
 I encourage you to read the source yourself and make some guesses on why we see such strange behavior from Timeout (beyond a cop-out answer like "yo, threads be crazy"). If you're not familiar with Ruby threads (or threads in general), it might be helpful to read [a quick tutorial][ruby-threads-article].
 
-I've also copied the Timeout source code here for covenience.
+I've also copied the Timeout source code here for convenience.
 
 {% highlight ruby %}
   def timeout(sec, klass = nil)   #:yield: +sec+
