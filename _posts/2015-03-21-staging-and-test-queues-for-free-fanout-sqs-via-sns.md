@@ -7,7 +7,7 @@ published: True
 
 ---
 
-This is a short post about SQS fanout queues, and how to start using them using the [AWS SDK for Ruby][aws-sdk-ruby].
+This is a short post about SQS fanout queues, how to start using them using the [AWS SDK for Ruby][aws-sdk-ruby], and how they can help you get staging and test data for free for all your SQS-dependent apps.
 
 Overview
 --------
