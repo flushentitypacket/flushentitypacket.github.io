@@ -40,7 +40,7 @@ def foo(key:)
 end
 
 def bar(key: 'default_value')
-  puts value
+  puts key
 end
 {% endhighlight %}
 
