@@ -27,7 +27,7 @@ def foo(args)
 end
 
 def bar(args = {})
-  value = args.fetch('key', 'default_value')
+  value = args.fetch(:key, 'default_value')
   puts value
 end
 {% endhighlight %}
