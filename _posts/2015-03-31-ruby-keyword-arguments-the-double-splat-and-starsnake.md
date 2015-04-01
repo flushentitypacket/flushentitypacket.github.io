@@ -20,28 +20,51 @@ Keyword arguments give you a convenient shorthand for using hashes as an argumen
 def foo(args)
   raise ArgumentError, "missing keyword: key" unless args[:key]
   if (unknowns = args.keys.select { |key| key != :key }).any?
-    raise ArgumentError, "unknown keywords: #{unknowns.join(', ')}"
+    raise ArgumentError, "unknown keywords: #{unknowns.join(", ")}"
   end
   key = args[:key]
-  puts key
+  key
 end
 
+foo(key: "value") # => "value"
+foo({}) # ArgumentError: missing keyword: key
+foo(other_key: "other_value") # ArgumentError: missing keyword: key
+foo(key: "value", other_key: "other_value") # ArgumentError: unknown keywords: other_key
+
 def bar(args = {})
-  value = args.fetch(:key, 'default_value')
-  puts value
+  value = args.fetch(:key, "default_value")
+  if (unknowns = args.keys.select { |key| key != :key }).any?
+    raise ArgumentError, "unknown keywords: #{unknowns.join(", ")}"
+  end
+  value
 end
+
+bar(key: "value") # => "value"
+bar({}) # => "default_value"
+bar(other_key: "other_value") # ArgumentError: unknown keywords: other_key
+bar(key: "value", other_key: "other_value") # ArgumentError: unknown keywords: other_key
 {% endhighlight %}
 
 Can now be written like this:
 
 {% highlight ruby %}
 def foo(key:)
-  puts key
+  key
 end
 
-def bar(key: 'default_value')
-  puts key
+foo(key: "value") # => "value"
+foo({}) # ArgumentError: missing keyword: key
+foo(other_key: "other_value") # ArgumentError: missing keyword: key
+foo(key: "value", other_key: "other_value") # ArgumentError: unknown keyword: other_key
+
+def bar(key: "default_value")
+  key
 end
+
+bar(key: "value") # => "value"
+bar({}) # => "default_value"
+bar(other_key: "other_value") # ArgumentError: unknown keyword: other_key
+bar(key: "value", other_key: "other_value") # ArgumentError: unknown keyword: other_key
 {% endhighlight %}
 
 Double splat!
@@ -56,18 +79,20 @@ def foo(args)
   raise ArgumentError, "missing keyword: key" unless args[:key]
   key = args[:key]
   everything_else = args.delete_if { |k, _| k == :key}
-  puts key
-  puts everything_else
+  [key, everything_else]
 end
+
+foo(key: "value", other_key: "other_value") # => ["value", {:other_key=>"other_value"}]
 {% endhighlight %}
 
 Ruby 2.0:
 
 {% highlight ruby %}
 def foo(key:, **everything_else)
-  puts key
-  puts everything_else
+  [key, everything_else]
 end
+
+foo(key: "value", other_key: "other_value") # => ["value", {:other_key=>"other_value"}]
 {% endhighlight %}
 
 Pretty cute!
@@ -75,25 +100,31 @@ Pretty cute!
 **_, the starsnake
 ------------------
 
-But what if I want to use the new shorthand syntax without raising an error on any extra keys? In code:
+But what if I want to use the new shorthand syntax without raising an error on any extra unused keys? In code:
 
 {% highlight ruby %}
 def foo(args)
   raise ArgumentError, "missing keyword: key" unless args[:key]
   # if (unknowns = args.keys.select { |key| key != :key }).any?
-  #   raise ArgumentError, "unknown keywords: #{unknowns.join(', ')}"
+  #   raise ArgumentError, "unknown keywords: #{unknowns.join(", ")}"
   # end
   key = args[:key]
-  puts key
+  key
 end
+
+foo(key: "value") # => "value"
+foo(key: "value", other_key: "other_value") # => "value"
 {% endhighlight %}
 
 Introducing, the starsnake **_ (sorry, couldn't come up with a good name).
 
 {% highlight ruby %}
 def foo(key:, **_)
-  puts key
+  key
 end
+
+foo(key: "value") # => "value"
+foo(key: "value", other_key: "other_value") # => "value"
 {% endhighlight %}
 
 If you don't know about Ruby's magic underscore (a syntax borrowed from Perl) you can read about it [here][magic-underscore]. Basically, `_` is Ruby's variable name for storing values you don't need.
