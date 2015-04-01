@@ -47,7 +47,7 @@ end
 Double splat!
 -------------
 
-There is a new operator, the double splat, that is sort of the splat for keyword arguments. This is most easily explained in yet another "before and after" example.
+There is a new operator, the double splat, that is sort of the [splat][splat] for keyword arguments. This is most easily explained in yet another "before and after" example.
 
 Ruby 1.9:
 
@@ -100,5 +100,6 @@ If you don't know about Ruby's magic underscore (a syntax borrowed from Perl) yo
 
 There may be some debate as to whether having a triple symbol expression or allowing arbitrary keys into your method is actually a good idea, but that's outside the scope of this post. ;)
 
+[splat]: http://jacopretorius.net/2012/01/splat-operator-in-ruby.html
 [magic-underscore]: http://po-ru.com/diary/rubys-magic-underscore/
 
