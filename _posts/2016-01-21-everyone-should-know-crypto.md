@@ -70,7 +70,7 @@ Encryption cannot protect you if you don't understand how to use it.
 
 Let's say you go to the local zoo, _Zootastic_. You head straight to the gorilla cages (because awesome), and you see this.
 
-// picture of lock on a cage that doesn't actually lock it
+![unlocked padlock]({{ site.url }}/assets/unlocked.jpg)
 
 You understand how a lock works. And that lock is clearly not doing anything. This zoo is clearly unsafe. You quickly leave _Zootastic_, and even alert the zookeepers.
 
