@@ -20,21 +20,21 @@ Let me tell you a (fictional) story of when I tried to open a bank account with 
 
 I call up the number from the _Banks R Us_ ad, and Bob from _Banks R Us_ answers.
 
-_Bob_: Bob from Banks R Us here.
-
-_Me_: I'd like to open a bank account at _Banks R Us_, please.
-
-_Bob_: Great! I'll just need your social security number to open the account.
+>*Bob*: Bob from Banks R Us here.
+>
+>*Me*: I'd like to open a bank account at _Banks R Us_, please.
+>
+>*Bob*: Great! I'll just need your social security number to open the account.
 
 That sounds fine--I trust _Banks R Us_ and their friendly business brand (the backwards _R_ on their logo really appeals to the kid in me), and Bob seems like a nice guy. So I'm okay with telling him such a secret piece of information.
 
-_Me_: Okay, my social security number is--
-
-_Bob_: Wait! That's not how this works.
+>*Me*: Okay, my social security number is--
+>
+>*Bob*: Wait! That's not how this works.
 
 Bob tells me that I can't just give my social security number over the phone. I need to write the number on a piece of paper and give it to my postman. Then the postman will bring it to my local gym and drop it off to whomever is working the front desk. Then a courier from _Banks R Us_ will pick it up and drop it in Bob's inbox.
 
-_Me_: That's insane! Any one of those people could steal my secret, and I wouldn't even know if they did! I'm hanging up.
+>*Me*: That's insane! Any one of those people could steal my secret, and I wouldn't even know if they did! I'm hanging up.
 
 Was I right to hang up?
 
