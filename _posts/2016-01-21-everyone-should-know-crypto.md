@@ -78,7 +78,7 @@ You understand how a lock works. And that lock is clearly not doing anything. Th
 
 Yet another heavy handed illustration, sorry.
 
-Not every part of the internet out there is a disaster like _Zootastic_, but [a lot of them are]().
+Not every part of the internet out there is a disaster like _Zootastic_, but [a lot of them are](https://github.com/search?p=3&q=extension:php+mysql_query+%24_GET&ref=searchresults&type=Code).
 
 If you do not know how to recognize when cryptography is protecting you and when it isn't, you'll find yourself in a dangerous situation without even realizing it.
 
